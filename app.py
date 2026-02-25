@@ -52,7 +52,12 @@ def forward_to_replify(campaign_id, data, gym_name):
                 ),
                 "contactMetadata": {
                     "source": gym_name,
-                    "gym": gym_name.split("-")[0]
+                    "gym": gym_name.split("-")[0],
+                    "pastDueAmount": (
+                        data.get("pastdueamount") or
+                        data.get("Total_past_due_balance") or
+                        data.get("pastDueAmount") or ""
+                    )
                 }
             }
         ]
