@@ -55,8 +55,11 @@ def forward_to_replify(campaign_id, data, gym_name):
                     "gym": gym_name.split("-")[0],
                     "pastDueAmount": (
                         data.get("pastdueamount") or
-                        data.get("Total_past_due_balance") or
-                        data.get("pastDueAmount") or ""
+                        data.get("Total_past_due_balance") or ""
+                    ),
+                    "agreementNumber": (
+                        data.get("agreement#") or
+                        data.get("Agreement") or ""
                     )
                 }
             }
