@@ -9,13 +9,23 @@ REPLIFY_API_KEY = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 
 GYMS = {
-    "wallingford":  "51fa892f-11c5-4464-a1b8-747be89139fa",
-    "torrington":   "87396182-4f0d-4d8d-b996-dfebbf355a3b",
-    "ridgefield":   "8c5612c3-dce9-4e72-b926-eee2b178006e",
-    "newtown":      "16e2cb63-1b40-484b-9d1c-561e2c659a35",
-    "newmilford":   "b819041d-9ac8-41cc-835a-9ecdc4ba9cde",
-    "middletown":   "526b3220-5831-4da7-b56c-38de83037af5",
-    "brookfield":   "f5c30a3e-1bb3-4ed4-83b9-7fb80780194f",
+    # --- Week Trial ---
+    "wallingford":              "51fa892f-11c5-4464-a1b8-747be89139fa",
+    "torrington":               "87396182-4f0d-4d8d-b996-dfebbf355a3b",
+    "ridgefield":               "8c5612c3-dce9-4e72-b926-eee2b178006e",
+    "newtown":                  "16e2cb63-1b40-484b-9d1c-561e2c659a35",
+    "newmilford":               "b819041d-9ac8-41cc-835a-9ecdc4ba9cde",
+    "middletown":               "526b3220-5831-4da7-b56c-38de83037af5",
+    "brookfield":               "f5c30a3e-1bb3-4ed4-83b9-7fb80780194f",
+
+    # --- Past Due 0-30 ---
+    "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
+    "torrington-pastdue0-30":   "",
+    "ridgefield-pastdue0-30":   "",
+    "newtown-pastdue0-30":      "",
+    "newmilford-pastdue0-30":   "",
+    "middletown-pastdue0-30":   "",
+    "brookfield-pastdue0-30":   "",
 }
 
 def forward_to_replify(campaign_id, data, gym_name):
@@ -41,8 +51,8 @@ def forward_to_replify(campaign_id, data, gym_name):
                     data.get("Phone") or ""
                 ),
                 "contactMetadata": {
-                    "source": "week_trial_form",
-                    "gym": gym_name
+                    "source": gym_name,
+                    "gym": gym_name.split("-")[0]
                 }
             }
         ]
@@ -58,13 +68,17 @@ def forward_to_replify(campaign_id, data, gym_name):
     logging.info(f"[{gym_name}] Replify response: {response.status_code} - {response.text}")
     return response
 
-@app.route("/webhook/<gym_name>", methods=["POST"])
+@app.route("/webhook/<path:gym_name>", methods=["POST"])
 def webhook(gym_name):
-    gym_key = gym_name.lower().replace("-", "").replace(" ", "")
+    gym_key = gym_name.lower().replace(" ", "")
 
     if gym_key not in GYMS:
         logging.warning(f"Unknown gym: {gym_name}")
         return jsonify({"error": f"Unknown gym: {gym_name}"}), 404
+
+    if not GYMS[gym_key]:
+        logging.warning(f"No campaign ID set for: {gym_name}")
+        return jsonify({"error": f"No campaign ID configured for: {gym_name}"}), 400
 
     data = request.json or request.form.to_dict()
     logging.info(f"[{gym_name}] Received from GleanTap: {data}")
