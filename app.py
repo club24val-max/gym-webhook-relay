@@ -10,7 +10,7 @@ BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 
 GYMS = {
     # --- Week Trial ---
-    "wallingford":              "51fa892f-11c5-4464-a1b8-747be89139fa",
+    "wallingford":              "06af6ac8-6501-4562-87b5-b546fd61e683",
     "torrington":               "87396182-4f0d-4d8d-b996-dfebbf355a3b",
     "ridgefield":               "8c5612c3-dce9-4e72-b926-eee2b178006e",
     "newtown":                  "16e2cb63-1b40-484b-9d1c-561e2c659a35",
