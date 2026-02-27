@@ -20,7 +20,7 @@ GYMS = {
 
     # --- Past Due 0-30 ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
-    "torrington-pastdue0-30":   "",
+    "torrington-pastdue0-30":   "90f8c7c3-5a48-4499-a2f5-1e1b7383f592",
     "ridgefield-pastdue0-30":   "",
     "newtown-pastdue0-30":      "",
     "newmilford-pastdue0-30":   "",
