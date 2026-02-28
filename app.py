@@ -22,8 +22,8 @@ GYMS = {
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
     "torrington-pastdue0-30":   "90f8c7c3-5a48-4499-a2f5-1e1b7383f592",
     "ridgefield-pastdue0-30":   "3cbfe5e4-8521-447c-a7e3-795b10aa8467",
-    "newtown-pastdue0-30":      "",
-    "newmilford-pastdue0-30":   "",
+    "newtown-pastdue0-30":      "2684b8ea-3c87-413e-89cd-83fc22405287",
+    "newmilford-pastdue0-30":   "0681a240-4771-43ba-b0ea-539e9dc760ab",
     "middletown-pastdue0-30":   "",
     "brookfield-pastdue0-30":   "",
 }
