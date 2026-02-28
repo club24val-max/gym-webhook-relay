@@ -25,7 +25,7 @@ GYMS = {
     "newtown-pastdue0-30":      "2684b8ea-3c87-413e-89cd-83fc22405287",
     "newmilford-pastdue0-30":   "0681a240-4771-43ba-b0ea-539e9dc760ab",
     "middletown-pastdue0-30":   "97391e22-f568-473f-a234-3f4c978f0e25",
-    "brookfield-pastdue0-30":   "",
+    "brookfield-pastdue0-30":   "3fddf132-90fb-4b1c-b287-19d6468478bb",
 }
 
 def forward_to_replify(campaign_id, data, gym_name):
