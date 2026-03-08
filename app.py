@@ -26,6 +26,24 @@ GYMS = {
     "newmilford-pastdue0-30":   "0681a240-4771-43ba-b0ea-539e9dc760ab",
     "middletown-pastdue0-30":   "97391e22-f568-473f-a234-3f4c978f0e25",
     "brookfield-pastdue0-30":   "3fddf132-90fb-4b1c-b287-19d6468478bb",
+
+    # --- Past Due 31-60 ---
+    "wallingford-pastdue31-60": "bead3dd7-4bad-4a8d-8862-7a057acf069a",
+    "torrington-pastdue31-60":  "a85aa596-0c39-4d45-b119-a9ce09a26460",
+    "ridgefield-pastdue31-60":  "8b581d95-4287-4cfc-a4cf-7e533c24dc22",
+    "newtown-pastdue31-60":     "94d1f0ee-c4fb-4887-8dc7-b69df1c99157",
+    "newmilford-pastdue31-60":  "08ce2214-369c-4a12-8416-56a46e32200d",
+    "middletown-pastdue31-60":  "447b3a5a-0dfd-42ff-a5b4-164ab820e0d5",
+    "brookfield-pastdue31-60":  "63aa4d47-7428-48f9-bff2-8124b16686fc",
+
+    # --- Past Due 61-90 ---
+    "wallingford-pastdue61-90": "128f0096-de10-43a5-82d0-f92f668bacd0",
+    "torrington-pastdue61-90":  "216579c4-de5d-49dd-b105-83293b3c3e18",
+    "ridgefield-pastdue61-90":  "4f968f09-a704-4245-9223-653804e14e9c",
+    "newtown-pastdue61-90":     "e662751d-a7e7-4cdf-a60b-bb6ef92aaad3",
+    "newmilford-pastdue61-90":  "7b019ef7-de80-4746-b39a-ff20defc57b7",
+    "middletown-pastdue61-90":  "fadc497d-5375-434e-8c4d-a2c037ada327",
+    "brookfield-pastdue61-90":  "6a5dfefc-94cd-42ca-9b82-5bdfb8bc52d1",
 }
 
 def forward_to_replify(campaign_id, data, gym_name):
