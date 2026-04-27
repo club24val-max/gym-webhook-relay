@@ -71,6 +71,33 @@ GYMS = {
     "newmilford-ptpastdue61-90":  "be4ead7c-6a1a-4ca3-a9a1-6043bcb7d0f6",
     "middletown-ptpastdue61-90":  "745714c3-76d2-4cf5-806d-8661d95f4a49",
     "brookfield-ptpastdue61-90":  "02ac7b55-4430-4062-91d1-b43d6bd8c3ef",
+
+    # --- Cancelled Member Month 1 ---
+    "wallingford-cancelled-month1":  "8da653cb-d4ca-4fbf-a24d-8ef5b765647e",
+    "torrington-cancelled-month1":   "",
+    "ridgefield-cancelled-month1":   "",
+    "newtown-cancelled-month1":      "",
+    "newmilford-cancelled-month1":   "",
+    "middletown-cancelled-month1":   "",
+    "brookfield-cancelled-month1":   "",
+
+    # --- Cancelled Member Month 2 ---
+    "wallingford-cancelled-month2":  "56e7f372-f7a5-4881-a89d-e55566202e3f",
+    "torrington-cancelled-month2":   "",
+    "ridgefield-cancelled-month2":   "",
+    "newtown-cancelled-month2":      "",
+    "newmilford-cancelled-month2":   "",
+    "middletown-cancelled-month2":   "",
+    "brookfield-cancelled-month2":   "",
+
+    # --- Cancelled Member Month 3 ---
+    "wallingford-cancelled-month3":  "bfead2ac-15fe-4b8c-b189-bca4eec5e2a4",
+    "torrington-cancelled-month3":   "",
+    "ridgefield-cancelled-month3":   "",
+    "newtown-cancelled-month3":      "",
+    "newmilford-cancelled-month3":   "",
+    "middletown-cancelled-month3":   "",
+    "brookfield-cancelled-month3":   "",
 }
 
 def forward_to_replify(campaign_id, data, gym_name):
