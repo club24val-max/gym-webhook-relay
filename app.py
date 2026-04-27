@@ -44,6 +44,33 @@ GYMS = {
     "newmilford-pastdue61-90":  "7b019ef7-de80-4746-b39a-ff20defc57b7",
     "middletown-pastdue61-90":  "fadc497d-5375-434e-8c4d-a2c037ada327",
     "brookfield-pastdue61-90":  "6a5dfefc-94cd-42ca-9b82-5bdfb8bc52d1",
+
+    # --- PT Past Due 0-30 ---
+    "wallingford-ptpastdue0-30":  "40b4abcd-f2fc-4487-9d28-3e98bc6acfd2",
+    "torrington-ptpastdue0-30":   "c8820391-9be2-40ee-bb12-7fe974a0d89d",
+    "ridgefield-ptpastdue0-30":   "10a65701-cc63-4bc3-bfd8-6f335c5ee531",
+    "newtown-ptpastdue0-30":      "2b03f651-88ed-4ed1-9cba-344743da47a7",
+    "newmilford-ptpastdue0-30":   "6c2e6259-1d19-4c98-98bc-01ecaac8901c",
+    "middletown-ptpastdue0-30":   "538923b0-acaa-41d7-8cd2-86fde68e6769",
+    "brookfield-ptpastdue0-30":   "55565835-d297-4c5b-b4f5-d9ca51245fa9",
+
+    # --- PT Past Due 31-60 ---
+    "wallingford-ptpastdue31-60": "6b5200f0-cf2a-4353-868e-2083e1fc3955",
+    "torrington-ptpastdue31-60":  "2c9c3fc2-e575-4a1c-b788-4af5a87aa656",
+    "ridgefield-ptpastdue31-60":  "337f4b83-1836-49db-9b0f-dee5fbd78c01",
+    "newtown-ptpastdue31-60":     "5fbf5606-15a8-40a0-924e-da21234f9481",
+    "newmilford-ptpastdue31-60":  "06a91e4c-2ed2-48ac-ad95-c5438b267af9",
+    "middletown-ptpastdue31-60":  "efbd172e-0087-4ea9-9e78-09f3b8b0682d",
+    "brookfield-ptpastdue31-60":  "367cc250-e51c-4c6a-ab50-11a5bfe64977",
+
+    # --- PT Past Due 61-90 ---
+    "wallingford-ptpastdue61-90": "7b4264e6-e409-4210-9708-b3e7dc27d485",
+    "torrington-ptpastdue61-90":  "9b6a1dc2-570a-45c0-8cc9-8e3dbe4cf9b7",
+    "ridgefield-ptpastdue61-90":  "b5b6abae-95e8-4cf6-97b4-9defc2840274",
+    "newtown-ptpastdue61-90":     "25f4113f-8854-430b-b737-00edad1b62c2",
+    "newmilford-ptpastdue61-90":  "be4ead7c-6a1a-4ca3-a9a1-6043bcb7d0f6",
+    "middletown-ptpastdue61-90":  "745714c3-76d2-4cf5-806d-8661d95f4a49",
+    "brookfield-ptpastdue61-90":  "02ac7b55-4430-4062-91d1-b43d6bd8c3ef",
 }
 
 def forward_to_replify(campaign_id, data, gym_name):
