@@ -2,8 +2,12 @@ from flask import Flask, request, jsonify
 import requests
 import logging
 
+from replify_routes import replify_bp                          # ← ADD THIS
+
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
+
+app.register_blueprint(replify_bp)                             # ← ADD THIS
 
 REPLIFY_API_KEY = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
@@ -181,4 +185,3 @@ def health():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
