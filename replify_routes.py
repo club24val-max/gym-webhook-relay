@@ -186,3 +186,106 @@ def get_summary():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# ============================================================================
+# DATA VIEWER - See your data in a browser
+# ============================================================================
+
+@replify_bp.route("/data", methods=["GET"])
+def view_data():
+    """
+    Browse your call data in a browser.
+    Visit: https://gym-webhook-relay.onrender.com/api/replify/data
+    """
+    import sqlite3
+    days = int(request.args.get("days", 30))
+    club_id = request.args.get("club_id")
+
+    conn = sqlite3.connect(call_analytics.db_path)
+    cursor = conn.cursor()
+    cutoff = (datetime.now(EASTERN) - timedelta(days=days)).isoformat()
+
+    # Summary stats
+    q = "SELECT COUNT(*), SUM(CASE WHEN outcome='answered' THEN 1 ELSE 0 END), SUM(CASE WHEN outcome='voicemail' THEN 1 ELSE 0 END), SUM(CASE WHEN outcome='no_answer' THEN 1 ELSE 0 END) FROM call_history WHERE timestamp > ?"
+    params = [cutoff]
+    if club_id:
+        q += " AND club_id = ?"
+        params.append(club_id)
+    cursor.execute(q, params)
+    total, answered, vmail, no_ans = cursor.fetchone()
+    total = total or 0
+    answered = answered or 0
+    vmail = vmail or 0
+    no_ans = no_ans or 0
+    rate = round((answered / total * 100), 1) if total > 0 else 0
+
+    # Recent calls
+    q2 = "SELECT phone, campaign, outcome, club_id, duration_seconds, timestamp FROM call_history WHERE timestamp > ?"
+    params2 = [cutoff]
+    if club_id:
+        q2 += " AND club_id = ?"
+        params2.append(club_id)
+    q2 += " ORDER BY timestamp DESC LIMIT 100"
+    cursor.execute(q2, params2)
+    rows = cursor.fetchall()
+    conn.close()
+
+    rows_html = ""
+    for phone, campaign, outcome, cid, dur, ts in rows:
+        color = "#2d8659" if outcome == "answered" else "#c9a227" if outcome == "voicemail" else "#c45c3a"
+        rows_html += f'<tr><td>{ts[:19]}</td><td>{phone}</td><td>{campaign}</td><td style="color:{color};font-weight:600">{outcome}</td><td>{cid}</td><td>{dur or 0}s</td></tr>'
+
+    html = f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Replify Analytics - Club 24</title>
+<style>
+  body {{ font-family: -apple-system, sans-serif; margin: 0; padding: 20px; background: #f5f5f0; color: #2c2c2a; }}
+  h1 {{ font-size: 24px; margin: 0 0 8px; }}
+  .sub {{ color: #888; font-size: 14px; margin-bottom: 24px; }}
+  .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }}
+  .stat {{ background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #ddd; }}
+  .stat-label {{ font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }}
+  .stat-value {{ font-size: 28px; font-weight: 700; margin-top: 4px; }}
+  table {{ width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; }}
+  th {{ background: #2c2c2a; color: #fff; padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }}
+  td {{ padding: 10px 12px; border-top: 1px solid #eee; font-size: 14px; }}
+  tr:hover {{ background: #f9f9f5; }}
+  .filters {{ margin-bottom: 16px; font-size: 14px; }}
+  .filters a {{ margin-right: 12px; color: #1d9e75; text-decoration: none; }}
+  .filters a:hover {{ text-decoration: underline; }}
+  .green {{ color: #1d9e75; }}
+</style></head><body>
+<h1>Replify Call Analytics</h1>
+<p class="sub">Last {days} days{f' &mdash; Club {club_id}' if club_id else ' &mdash; All clubs'}</p>
+<div class="filters">
+  Filter by club:
+  <a href="?days={days}">All</a>
+  <a href="?days={days}&club_id=09556">Wallingford</a>
+  <a href="?days={days}&club_id=09557">Torrington</a>
+  <a href="?days={days}&club_id=09558">Ridgefield</a>
+  <a href="?days={days}&club_id=09559">Newtown</a>
+  <a href="?days={days}&club_id=09560">New Milford</a>
+  <a href="?days={days}&club_id=09561">Middletown</a>
+  <a href="?days={days}&club_id=09562">Brookfield</a>
+  &nbsp;|&nbsp; Days:
+  <a href="?days=7{'&club_id=' + club_id if club_id else ''}">7d</a>
+  <a href="?days=14{'&club_id=' + club_id if club_id else ''}">14d</a>
+  <a href="?days=30{'&club_id=' + club_id if club_id else ''}">30d</a>
+  <a href="?days=60{'&club_id=' + club_id if club_id else ''}">60d</a>
+  <a href="?days=90{'&club_id=' + club_id if club_id else ''}">90d</a>
+</div>
+<div class="stats">
+  <div class="stat"><div class="stat-label">Total calls</div><div class="stat-value">{total}</div></div>
+  <div class="stat"><div class="stat-label">Answer rate</div><div class="stat-value green">{rate}%</div></div>
+  <div class="stat"><div class="stat-label">Answered</div><div class="stat-value">{answered}</div></div>
+  <div class="stat"><div class="stat-label">Voicemail</div><div class="stat-value">{vmail}</div></div>
+  <div class="stat"><div class="stat-label">No answer</div><div class="stat-value">{no_ans}</div></div>
+</div>
+<table>
+  <thead><tr><th>Time</th><th>Phone</th><th>Campaign</th><th>Outcome</th><th>Club</th><th>Duration</th></tr></thead>
+  <tbody>{rows_html if rows_html else '<tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No calls logged yet. Send a test or configure Replify webhooks.</td></tr>'}</tbody>
+</table>
+</body></html>"""
+
+    return html, 200, {"Content-Type": "text/html"}
