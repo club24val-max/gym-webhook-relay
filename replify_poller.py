@@ -170,19 +170,19 @@ def process_campaign_contacts(data, campaign_name):
     contacts = data["data"].get("campaignContacts", [])
     logged_count = 0
 
+    # Derive gym name from campaign key (e.g., "torrington-pastdue0-30" → "torrington")
+    # This is reliable because we always know which campaign we're polling
+    gym_from_key = campaign_name.split("-")[0].lower()
+    club_id = GYM_TO_CLUB_ID.get(gym_from_key, "unknown")
+
+    # Derive campaign type (e.g., "torrington-pastdue0-30" → "pastdue0-30")
+    parts = campaign_name.split("-", 1)
+    campaign_type = parts[1] if len(parts) > 1 else "week_trial"
+
     for contact in contacts:
         phone = contact.get("phone", "")
         first_name = contact.get("firstName", "")
         last_name = contact.get("lastName", "")
-        metadata = contact.get("contactMetadata", {})
-        gym_name = metadata.get("gym", "")
-        source = metadata.get("source", campaign_name)
-
-        # Get club ID from gym name
-        club_id = GYM_TO_CLUB_ID.get(gym_name.lower(), "unknown")
-
-        # Determine campaign type from source
-        campaign_type = source if source else campaign_name
 
         # Process each outreach (call attempt)
         outreach_list = contact.get("Outreach", [])
@@ -299,6 +299,31 @@ def trigger_poll():
         })
     except Exception as e:
         logger.error(f"Poll failed: {e}")
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+
+@poller_bp.route("/reset", methods=["POST"])
+def reset_and_repoll():
+    """Clear all call history and re-poll everything fresh."""
+    try:
+        import sqlite3
+        conn = sqlite3.connect(call_analytics.db_path)
+        conn.execute("DELETE FROM call_history")
+        conn.execute("DELETE FROM hourly_stats")
+        conn.commit()
+        conn.close()
+        logger.info("Database cleared. Re-polling all campaigns...")
+
+        count = poll_all_campaigns()
+        return jsonify({
+            "status": "success",
+            "message": "Database cleared and re-polled",
+            "new_outcomes_logged": count,
+            "campaigns_polled": len(CAMPAIGNS),
+            "timestamp": datetime.now(EASTERN).isoformat()
+        })
+    except Exception as e:
+        logger.error(f"Reset failed: {e}")
         return jsonify({"status": "error", "error": str(e)}), 500
 
 
