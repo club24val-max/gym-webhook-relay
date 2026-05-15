@@ -2,12 +2,17 @@ from flask import Flask, request, jsonify
 import requests
 import logging
 
-from replify_routes import replify_bp                          # ← ADD THIS
+from replify_routes import replify_bp
+from replify_poller import poller_bp, start_background_poller
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-app.register_blueprint(replify_bp)                             # ← ADD THIS
+app.register_blueprint(replify_bp)
+app.register_blueprint(poller_bp)
+
+# Start background poller (polls Replify every 2 hours for call outcomes)
+start_background_poller(interval_hours=2)
 
 REPLIFY_API_KEY = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
