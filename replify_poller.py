@@ -28,16 +28,8 @@ logger = logging.getLogger(__name__)
 # Replify internal API
 CAMPAIGN_API_BASE = "https://campaign.mylibby.ai/campaigns"
 
-# Your Cognito credentials (same login you use for app.replify.ai)
-# Set these as environment variables on Render for security
+# Your Replify login credentials (kept as fallback reference)
 import os
-COGNITO_USERNAME = os.environ.get("REPLIFY_USERNAME", "")
-COGNITO_PASSWORD = os.environ.get("REPLIFY_PASSWORD", "")
-
-# Cognito pool details (from your browser network tab)
-COGNITO_REGION = "us-east-1"
-COGNITO_CLIENT_ID = "1rkksfkasrk92m6rec8p5crqc1"
-COGNITO_USER_POOL_ID = "us-east-1_er9eUugA0"
 
 # All your campaign IDs (from app.py GYMS dict)
 CAMPAIGNS = {
@@ -118,52 +110,24 @@ GYM_TO_CLUB_ID = {
 
 
 # ============================================================================
-# COGNITO AUTH
+# AUTH - Uses Bearer token from environment variable
 # ============================================================================
 
-_cached_token = None
-_token_expiry = None
+# The token comes from your Replify login session.
+# Set REPLIFY_BEARER_TOKEN in Render environment variables.
+# To get a fresh token: log into app.replify.ai, open DevTools (F12),
+# Network tab, find any XHR request, copy the Authorization: Bearer ... value.
+# Tokens last ~24 hours. Update the env var when it expires.
+
+BEARER_TOKEN = os.environ.get("REPLIFY_BEARER_TOKEN", "")
 
 
 def get_auth_token():
-    """Get a valid Bearer token using Cognito USER_PASSWORD_AUTH."""
-    global _cached_token, _token_expiry
-
-    # Return cached token if still valid
-    if _cached_token and _token_expiry and datetime.now() < _token_expiry:
-        return _cached_token
-
-    if not COGNITO_USERNAME or not COGNITO_PASSWORD:
-        logger.error("REPLIFY_USERNAME and REPLIFY_PASSWORD environment variables not set")
+    """Return the Bearer token from environment."""
+    if not BEARER_TOKEN:
+        logger.error("REPLIFY_BEARER_TOKEN environment variable not set")
         return None
-
-    try:
-        import boto3
-        client = boto3.client("cognito-idp", region_name=COGNITO_REGION)
-
-        response = client.initiate_auth(
-            ClientId=COGNITO_CLIENT_ID,
-            AuthFlow="USER_PASSWORD_AUTH",
-            AuthParameters={
-                "USERNAME": COGNITO_USERNAME,
-                "PASSWORD": COGNITO_PASSWORD,
-            },
-        )
-
-        result = response["AuthenticationResult"]
-        _cached_token = result["AccessToken"]
-        # Token usually valid for 1 hour; refresh 5 min early
-        _token_expiry = datetime.now() + timedelta(seconds=result.get("ExpiresIn", 3600) - 300)
-
-        logger.info("Successfully obtained Cognito auth token")
-        return _cached_token
-
-    except ImportError:
-        logger.error("boto3 not installed. Run: pip install boto3")
-        return None
-    except Exception as e:
-        logger.error(f"Cognito auth failed: {e}")
-        return None
+    return BEARER_TOKEN
 
 
 # ============================================================================
@@ -341,13 +305,11 @@ def trigger_poll():
 @poller_bp.route("/status", methods=["GET"])
 def poll_status():
     """Check poller status and auth."""
-    has_creds = bool(COGNITO_USERNAME and COGNITO_PASSWORD)
-    token_valid = bool(_cached_token and _token_expiry and datetime.now() < _token_expiry)
+    has_token = bool(BEARER_TOKEN)
 
     return jsonify({
-        "credentials_configured": has_creds,
-        "token_valid": token_valid,
-        "token_expires": _token_expiry.isoformat() if _token_expiry else None,
+        "bearer_token_configured": has_token,
+        "token_prefix": BEARER_TOKEN[:20] + "..." if has_token else None,
         "campaigns_configured": len(CAMPAIGNS),
     })
 
