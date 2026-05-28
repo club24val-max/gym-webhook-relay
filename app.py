@@ -9,7 +9,7 @@ REPLIFY_API_KEY = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 BASE_URL_OLD = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 
 GYMS = {
-    # --- Week Trial (new format with agent param) ---
+    # --- Week Trial ---
     "wallingford":  {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=a2c02d50-4f11-4311-b359-3ca89028df57"},
     "ridgefield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=0c0d6b76-7e35-41e0-a36b-7106f6c2fda1"},
     "torrington":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=437c8652-988a-4354-a03f-40245c8822c4"},
@@ -17,6 +17,15 @@ GYMS = {
     "newmilford":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43"},
     "middletown":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=60cb543e-4663-45be-a968-71f291e13a49"},
     "brookfield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=acc93743-938c-4637-814a-4dc9feafa175"},
+
+    # --- Toured / No Join ---
+    "wallingford-toured":  {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=a2c02d50-4f11-4311-b359-3ca89028df57"},
+    "ridgefield-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=0c0d6b76-7e35-41e0-a36b-7106f6c2fda1"},
+    "torrington-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=437c8652-988a-4354-a03f-40245c8822c4"},
+    "newtown-toured":      {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=dea52645-a68d-4203-85cc-dbfda35b3796"},
+    "newmilford-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43"},
+    "middletown-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=60cb543e-4663-45be-a968-71f291e13a49"},
+    "brookfield-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/baef7015-4ed0-4c55-985e-2bf13e5e2b6e/contacts?agent=acc93743-938c-4637-814a-4dc9feafa175"},
 
     # --- Past Due 0-30 ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
@@ -143,7 +152,6 @@ def forward_to_replify(gym_entry, data, gym_name):
         "x-api-key": REPLIFY_API_KEY
     }
 
-    # New format (dict with full url) or old format (campaign ID string)
     if isinstance(gym_entry, dict):
         url = gym_entry["url"]
     else:
