@@ -2,30 +2,21 @@ from flask import Flask, request, jsonify
 import requests
 import logging
 
-from replify_routes import replify_bp
-from replify_poller import poller_bp, start_background_poller
-
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-app.register_blueprint(replify_bp)
-app.register_blueprint(poller_bp)
-
-# Start background poller (polls Replify every 2 hours for call outcomes)
-start_background_poller(interval_hours=2)
-
 REPLIFY_API_KEY = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
-BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
+BASE_URL_OLD = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 
 GYMS = {
-    # --- Week Trial ---
-    "wallingford":              "06af6ac8-6501-4562-87b5-b546fd61e683",
-    "torrington":               "87396182-4f0d-4d8d-b996-dfebbf355a3b",
-    "ridgefield":               "8c5612c3-dce9-4e72-b926-eee2b178006e",
-    "newtown":                  "16e2cb63-1b40-484b-9d1c-561e2c659a35",
-    "newmilford":               "b819041d-9ac8-41cc-835a-9ecdc4ba9cde",
-    "middletown":               "526b3220-5831-4da7-b56c-38de83037af5",
-    "brookfield":               "f5c30a3e-1bb3-4ed4-83b9-7fb80780194f",
+    # --- Week Trial (new format with agent param) ---
+    "wallingford":  {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=a2c02d50-4f11-4311-b359-3ca89028df57"},
+    "ridgefield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=0c0d6b76-7e35-41e0-a36b-7106f6c2fda1"},
+    "torrington":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=437c8652-988a-4354-a03f-40245c8822c4"},
+    "newtown":      {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=dea52645-a68d-4203-85cc-dbfda35b3796"},
+    "newmilford":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43"},
+    "middletown":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=60cb543e-4663-45be-a968-71f291e13a49"},
+    "brookfield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/5a95b3ae-c915-4d4e-a398-d27bf7184e61/contacts?agent=acc93743-938c-4637-814a-4dc9feafa175"},
 
     # --- Past Due 0-30 ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
@@ -109,7 +100,7 @@ GYMS = {
     "brookfield-cancelled-month3":   "",
 }
 
-def forward_to_replify(campaign_id, data, gym_name):
+def forward_to_replify(gym_entry, data, gym_name):
     payload = {
         "contacts": [
             {
@@ -152,7 +143,12 @@ def forward_to_replify(campaign_id, data, gym_name):
         "x-api-key": REPLIFY_API_KEY
     }
 
-    url = BASE_URL.format(campaign_id=campaign_id)
+    # New format (dict with full url) or old format (campaign ID string)
+    if isinstance(gym_entry, dict):
+        url = gym_entry["url"]
+    else:
+        url = BASE_URL_OLD.format(campaign_id=gym_entry)
+
     response = requests.post(url, json=payload, headers=headers)
     logging.info(f"[{gym_name}] Replify response: {response.status_code} - {response.text}")
     return response
@@ -165,15 +161,15 @@ def webhook(gym_name):
         logging.warning(f"Unknown gym: {gym_name}")
         return jsonify({"error": f"Unknown gym: {gym_name}"}), 404
 
-    if not GYMS[gym_key]:
+    gym_entry = GYMS[gym_key]
+    if not gym_entry or gym_entry == "":
         logging.warning(f"No campaign ID set for: {gym_name}")
         return jsonify({"error": f"No campaign ID configured for: {gym_name}"}), 400
 
     data = request.json or request.form.to_dict()
     logging.info(f"[{gym_name}] Received from GleanTap: {data}")
 
-    campaign_id = GYMS[gym_key]
-    response = forward_to_replify(campaign_id, data, gym_name)
+    response = forward_to_replify(gym_entry, data, gym_name)
 
     return jsonify({
         "status": "ok",
