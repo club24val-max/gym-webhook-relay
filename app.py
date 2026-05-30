@@ -8,11 +8,25 @@ logging.basicConfig(level=logging.INFO)
 REPLIFY_API_KEY_OLD = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 REPLIFY_API_KEY_NEW = "D0SNMBdfhl7XbBdu4jUdk8TB85AxDj4r6YZ77lVL"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
+OUTBOUND_URL = "https://api.heylibby.com/api/v1/outbound/call"
+
+# Agent IDs per gym for outbound calls
+AGENT_IDS = {
+    "wallingford":  "a2c02d50-4f11-4311-b359-3ca89028df57",
+    "torrington":   "437c8652-988a-4354-a03f-40245c8822c4",
+    "ridgefield":   "0c0d6b76-7e35-41e0-a36b-7106f6c2fda1",
+    "newtown":      "dea52645-a68d-4203-85cc-dbfda35b3796",
+    "newmilford":   "2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43",
+    "middletown":   "60cb543e-4663-45be-a968-71f291e13a49",
+    "brookfield":   "acc93743-938c-4637-814a-4dc9feafa175",
+}
 
 GYMS = {
-    # --- Week Trial (new API key) ---
+    # --- Week Trial ---
+    # Torrington: using outbound call API (test)
+    "torrington":   {"type": "outbound", "gym": "torrington"},
+    # All others: still using campaign API (new key)
     "wallingford":  {"campaign_id": "1b9ec7a0-6690-445d-a58c-5b66b899dea4", "new": True},
-    "torrington":   {"campaign_id": "927432a1-4f29-4344-968c-e7740a0d93ca", "new": True},
     "ridgefield":   {"campaign_id": "9be3a3b9-661a-4a73-8926-ba4674e1810b", "new": True},
     "newtown":      {"campaign_id": "a5ed599d-ac85-4828-a2b6-44b596cbce97", "new": True},
     "newmilford":   {"campaign_id": "9389e06e-f211-4b89-9f66-592f21101b88", "new": True},
@@ -110,6 +124,44 @@ GYMS = {
     "brookfield-cancelled-month3":   "",
 }
 
+def make_outbound_call(gym_name, data):
+    first_name = (
+        data.get("firstName") or
+        data.get("First_name") or
+        data.get("first_name") or "there"
+    )
+    phone = str(data.get("phone") or data.get("Phone") or "")
+    # Ensure E.164 format
+    phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    if not phone.startswith("+"):
+        phone = "+1" + phone if len(phone) == 10 else "+" + phone
+
+    agent_id = AGENT_IDS.get(gym_name)
+    payload = {
+        "agentId": agent_id,
+        "contact": {
+            "phoneNumber": phone,
+            "firstName": data.get("firstName") or data.get("First_name") or "",
+            "lastName": data.get("lastName") or data.get("Last_name") or "",
+            "email": data.get("email") or data.get("Email") or "",
+        },
+        "metadata": {
+            "gym": gym_name,
+            "source": "week_trial_form"
+        },
+        "introMessage": f"Hi {first_name}, this is Maya calling from Club 24. I saw you recently claimed your free 7-day pass, and I wanted to personally welcome you and help you get started. We'd love to get your first workout scheduled so you can take full advantage of your free week. What day works best for you to come in and check out the club?",
+        "voicemailMessage": f"Hi {first_name}, this is Maya calling from Club 24. I'm reaching out because you recently signed up for a free 7-day pass with us. I wanted to help you get your first visit scheduled and answer any questions you may have before coming in. Give us a call back, and we'll get your free week started. We look forward to seeing you soon!"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": REPLIFY_API_KEY_NEW
+    }
+
+    response = requests.post(OUTBOUND_URL, json=payload, headers=headers)
+    logging.info(f"[{gym_name}] Outbound call response: {response.status_code} - {response.text}")
+    return response
+
 def forward_to_replify(gym_entry, data, gym_name):
     payload = {
         "contacts": [
@@ -149,7 +201,6 @@ def forward_to_replify(gym_entry, data, gym_name):
         "action": "upsert"
     }
 
-    # New campaigns use new API key, old campaigns use old API key
     if isinstance(gym_entry, dict) and gym_entry.get("new"):
         campaign_id = gym_entry["campaign_id"]
         api_key = REPLIFY_API_KEY_NEW
@@ -183,7 +234,11 @@ def webhook(gym_name):
     data = request.json or request.form.to_dict()
     logging.info(f"[{gym_name}] Received from GleanTap: {data}")
 
-    response = forward_to_replify(gym_entry, data, gym_name)
+    # Use outbound call API or campaign API
+    if isinstance(gym_entry, dict) and gym_entry.get("type") == "outbound":
+        response = make_outbound_call(gym_entry["gym"], data)
+    else:
+        response = forward_to_replify(gym_entry, data, gym_name)
 
     return jsonify({
         "status": "ok",
