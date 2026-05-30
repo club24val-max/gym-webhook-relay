@@ -10,22 +10,22 @@ BASE_URL_OLD = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts
 
 GYMS = {
     # --- Week Trial ---
-    "wallingford":  {"url": "https://app.replify.ai/campaigns/campaign-ofu/1b9ec7a0-6690-445d-a58c-5b66b899dea4/contacts?agent=a2c02d50-4f11-4311-b359-3ca89028df57"},
-    "torrington":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/927432a1-4f29-4344-968c-e7740a0d93ca/contacts?agent=437c8652-988a-4354-a03f-40245c8822c4"},
-    "ridgefield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/9be3a3b9-661a-4a73-8926-ba4674e1810b/contacts?agent=0c0d6b76-7e35-41e0-a36b-7106f6c2fda1"},
-    "newtown":      {"url": "https://app.replify.ai/campaigns/campaign-ofu/a5ed599d-ac85-4828-a2b6-44b596cbce97/contacts?agent=dea52645-a68d-4203-85cc-dbfda35b3796"},
-    "newmilford":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/9389e06e-f211-4b89-9f66-592f21101b88/contacts?agent=2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43"},
-    "middletown":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/3529143b-5049-4256-a7f8-ef2b09466c01/contacts?agent=60cb543e-4663-45be-a968-71f291e13a49"},
-    "brookfield":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/a89f3263-0892-4704-b3f2-6cafd770725b/contacts?agent=acc93743-938c-4637-814a-4dc9feafa175"},
+    "wallingford":  "1b9ec7a0-6690-445d-a58c-5b66b899dea4",
+    "torrington":   "927432a1-4f29-4344-968c-e7740a0d93ca",
+    "ridgefield":   "9be3a3b9-661a-4a73-8926-ba4674e1810b",
+    "newtown":      "a5ed599d-ac85-4828-a2b6-44b596cbce97",
+    "newmilford":   "9389e06e-f211-4b89-9f66-592f21101b88",
+    "middletown":   "3529143b-5049-4256-a7f8-ef2b09466c01",
+    "brookfield":   "a89f3263-0892-4704-b3f2-6cafd770725b",
 
     # --- Toured / No Join ---
-    "wallingford-toured":  {"url": "https://app.replify.ai/campaigns/campaign-ofu/6f5669f0-b8b6-43d9-aa9b-17fa3119ba8b/contacts?agent=a2c02d50-4f11-4311-b359-3ca89028df57"},
-    "torrington-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/c93d8b19-1187-416c-b0b3-ca92a49a2138/contacts?agent=437c8652-988a-4354-a03f-40245c8822c4"},
-    "ridgefield-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/9509535e-b23c-4d85-b4b7-ffac07a54328/contacts?agent=0c0d6b76-7e35-41e0-a36b-7106f6c2fda1"},
-    "newtown-toured":      {"url": "https://app.replify.ai/campaigns/campaign-ofu/472c0a12-a3c2-4135-b10f-1d0b81e39d5d/contacts?agent=dea52645-a68d-4203-85cc-dbfda35b3796"},
-    "newmilford-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/a6b5f3bb-2a52-42b3-9558-6e99a7267715/contacts?agent=2500aaa6-a255-4ae3-8c82-ee8a6aaf6b43"},
-    "middletown-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/c47c28c2-ad85-4646-bf16-966908b94680/contacts?agent=60cb543e-4663-45be-a968-71f291e13a49"},
-    "brookfield-toured":   {"url": "https://app.replify.ai/campaigns/campaign-ofu/ffc21806-fcb9-4355-b4ff-034b8e1b2b22/contacts?agent=acc93743-938c-4637-814a-4dc9feafa175"},
+    "wallingford-toured":  "6f5669f0-b8b6-43d9-aa9b-17fa3119ba8b",
+    "torrington-toured":   "c93d8b19-1187-416c-b0b3-ca92a49a2138",
+    "ridgefield-toured":   "9509535e-b23c-4d85-b4b7-ffac07a54328",
+    "newtown-toured":      "472c0a12-a3c2-4135-b10f-1d0b81e39d5d",
+    "newmilford-toured":   "a6b5f3bb-2a52-42b3-9558-6e99a7267715",
+    "middletown-toured":   "c47c28c2-ad85-4646-bf16-966908b94680",
+    "brookfield-toured":   "ffc21806-fcb9-4355-b4ff-034b8e1b2b22",
 
     # --- Past Due 0-30 ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
