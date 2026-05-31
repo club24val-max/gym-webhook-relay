@@ -10,7 +10,6 @@ REPLIFY_API_KEY_NEW = "D0SNMBdfhl7XbBdu4jUdk8TB85AxDj4r6YZ77lVL"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 OUTBOUND_URL = "https://api.heylibby.com/api/v1/outbound/call"
 
-# Agent IDs per gym for outbound calls
 AGENT_IDS = {
     "wallingford":  "a2c02d50-4f11-4311-b359-3ca89028df57",
     "torrington":   "437c8652-988a-4354-a03f-40245c8822c4",
@@ -22,25 +21,23 @@ AGENT_IDS = {
 }
 
 GYMS = {
-    # --- Week Trial ---
-    # Torrington: using outbound call API (test)
-    "torrington":   {"type": "outbound", "gym": "torrington"},
-    # All others: still using campaign API (new key)
-    "wallingford":  {"campaign_id": "1b9ec7a0-6690-445d-a58c-5b66b899dea4", "new": True},
-    "ridgefield":   {"campaign_id": "9be3a3b9-661a-4a73-8926-ba4674e1810b", "new": True},
-    "newtown":      {"campaign_id": "a5ed599d-ac85-4828-a2b6-44b596cbce97", "new": True},
-    "newmilford":   {"campaign_id": "9389e06e-f211-4b89-9f66-592f21101b88", "new": True},
-    "middletown":   {"campaign_id": "3529143b-5049-4256-a7f8-ef2b09466c01", "new": True},
-    "brookfield":   {"campaign_id": "a89f3263-0892-4704-b3f2-6cafd770725b", "new": True},
+    # --- Week Trial (outbound call API) ---
+    "wallingford":  {"type": "outbound", "gym": "wallingford", "campaign": "weektrial"},
+    "torrington":   {"type": "outbound", "gym": "torrington", "campaign": "weektrial"},
+    "ridgefield":   {"type": "outbound", "gym": "ridgefield", "campaign": "weektrial"},
+    "newtown":      {"type": "outbound", "gym": "newtown", "campaign": "weektrial"},
+    "newmilford":   {"type": "outbound", "gym": "newmilford", "campaign": "weektrial"},
+    "middletown":   {"type": "outbound", "gym": "middletown", "campaign": "weektrial"},
+    "brookfield":   {"type": "outbound", "gym": "brookfield", "campaign": "weektrial"},
 
-    # --- Toured / No Join (new API key) ---
-    "wallingford-toured":  {"campaign_id": "6f5669f0-b8b6-43d9-aa9b-17fa3119ba8b", "new": True},
-    "torrington-toured":   {"campaign_id": "c93d8b19-1187-416c-b0b3-ca92a49a2138", "new": True},
-    "ridgefield-toured":   {"campaign_id": "9509535e-b23c-4d85-b4b7-ffac07a54328", "new": True},
-    "newtown-toured":      {"campaign_id": "472c0a12-a3c2-4135-b10f-1d0b81e39d5d", "new": True},
-    "newmilford-toured":   {"campaign_id": "a6b5f3bb-2a52-42b3-9558-6e99a7267715", "new": True},
-    "middletown-toured":   {"campaign_id": "c47c28c2-ad85-4646-bf16-966908b94680", "new": True},
-    "brookfield-toured":   {"campaign_id": "ffc21806-fcb9-4355-b4ff-034b8e1b2b22", "new": True},
+    # --- Toured / No Join (outbound call API) ---
+    "wallingford-toured":  {"type": "outbound", "gym": "wallingford", "campaign": "toured"},
+    "torrington-toured":   {"type": "outbound", "gym": "torrington", "campaign": "toured"},
+    "ridgefield-toured":   {"type": "outbound", "gym": "ridgefield", "campaign": "toured"},
+    "newtown-toured":      {"type": "outbound", "gym": "newtown", "campaign": "toured"},
+    "newmilford-toured":   {"type": "outbound", "gym": "newmilford", "campaign": "toured"},
+    "middletown-toured":   {"type": "outbound", "gym": "middletown", "campaign": "toured"},
+    "brookfield-toured":   {"type": "outbound", "gym": "brookfield", "campaign": "toured"},
 
     # --- Past Due 0-30 (old API key) ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
@@ -124,14 +121,23 @@ GYMS = {
     "brookfield-cancelled-month3":   "",
 }
 
-def make_outbound_call(gym_name, data):
+INTRO_MESSAGES = {
+    "weektrial": "Hi {first_name}, this is Maya calling from Club 24. I saw you recently claimed your free 7-day pass, and I wanted to personally welcome you and help you get started. We'd love to get your first workout scheduled so you can take full advantage of your free week. What day works best for you to come in and check out the club?",
+    "toured": "Hi {first_name}, this is Maya calling from Club 24. You toured our facility a couple of weeks ago, and I just wanted to follow up to see if you had any questions about membership or the club itself. We're also currently offering a special promotion exclusively for recent tour guests, and I wanted to make sure you had the opportunity to take advantage of it before it ends. Do you have any questions for us?",
+}
+
+VOICEMAIL_MESSAGES = {
+    "weektrial": "Hi {first_name}, this is Maya calling from Club 24. I'm reaching out because you recently signed up for a free 7-day pass with us. I wanted to help you get your first visit scheduled and answer any questions you may have before coming in. Give us a call back, and we'll get your free week started. We look forward to seeing you soon!",
+    "toured": "Hi {first_name}, this is Maya calling from Club 24. I'm just following up regarding your recent visit and tour at our facility a couple of weeks ago. I wanted to check in to see if you had any questions about membership options and also let you know we currently have a special promotion available exclusively for recent tour guests for a limited time. Please give us a call back, go to our website club24gyms dot com, or stop by the club anytime. We'd love to help you get started. Thanks again, and we look forward to hearing from you soon.",
+}
+
+def make_outbound_call(gym_name, campaign, data):
     first_name = (
         data.get("firstName") or
         data.get("First_name") or
         data.get("first_name") or "there"
     )
     phone = str(data.get("phone") or data.get("Phone") or "")
-    # Ensure E.164 format
     phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
     if not phone.startswith("+"):
         phone = "+1" + phone if len(phone) == 10 else "+" + phone
@@ -147,10 +153,10 @@ def make_outbound_call(gym_name, data):
         },
         "metadata": {
             "gym": gym_name,
-            "source": "week_trial_form"
+            "source": campaign
         },
-        "introMessage": f"Hi {first_name}, this is Maya calling from Club 24. I saw you recently claimed your free 7-day pass, and I wanted to personally welcome you and help you get started. We'd love to get your first workout scheduled so you can take full advantage of your free week. What day works best for you to come in and check out the club?",
-        "voicemailMessage": f"Hi {first_name}, this is Maya calling from Club 24. I'm reaching out because you recently signed up for a free 7-day pass with us. I wanted to help you get your first visit scheduled and answer any questions you may have before coming in. Give us a call back, and we'll get your free week started. We look forward to seeing you soon!"
+        "introMessage": INTRO_MESSAGES[campaign].format(first_name=first_name),
+        "voicemailMessage": VOICEMAIL_MESSAGES[campaign].format(first_name=first_name),
     }
 
     headers = {
@@ -159,7 +165,7 @@ def make_outbound_call(gym_name, data):
     }
 
     response = requests.post(OUTBOUND_URL, json=payload, headers=headers)
-    logging.info(f"[{gym_name}] Outbound call response: {response.status_code} - {response.text}")
+    logging.info(f"[{gym_name}-{campaign}] Outbound call response: {response.status_code} - {response.text}")
     return response
 
 def forward_to_replify(gym_entry, data, gym_name):
@@ -234,9 +240,8 @@ def webhook(gym_name):
     data = request.json or request.form.to_dict()
     logging.info(f"[{gym_name}] Received from GleanTap: {data}")
 
-    # Use outbound call API or campaign API
     if isinstance(gym_entry, dict) and gym_entry.get("type") == "outbound":
-        response = make_outbound_call(gym_entry["gym"], data)
+        response = make_outbound_call(gym_entry["gym"], gym_entry["campaign"], data)
     else:
         response = forward_to_replify(gym_entry, data, gym_name)
 
