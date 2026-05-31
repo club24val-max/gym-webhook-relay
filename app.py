@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import requests
 import logging
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -9,6 +11,7 @@ REPLIFY_API_KEY_OLD = "KZ3RAX9xJmzmLZJGMcOt4zDx94rHQd89fnlLTFEj"
 REPLIFY_API_KEY_NEW = "D0SNMBdfhl7XbBdu4jUdk8TB85AxDj4r6YZ77lVL"
 BASE_URL = "https://api.heylibby.com/api/v1/campaigns/{campaign_id}/contacts"
 OUTBOUND_URL = "https://api.heylibby.com/api/v1/outbound/call"
+EASTERN = pytz.timezone("America/New_York")
 
 AGENT_IDS = {
     "wallingford":  "a2c02d50-4f11-4311-b359-3ca89028df57",
@@ -131,7 +134,22 @@ VOICEMAIL_MESSAGES = {
     "toured": "Hi {first_name}, this is Maya calling from Club 24. I'm just following up regarding your recent visit and tour at our facility a couple of weeks ago. I wanted to check in to see if you had any questions about membership options and also let you know we currently have a special promotion available exclusively for recent tour guests for a limited time. Please give us a call back, go to our website club24gyms dot com, or stop by the club anytime. We'd love to help you get started. Thanks again, and we look forward to hearing from you soon.",
 }
 
+def is_within_calling_hours():
+    now = datetime.now(EASTERN)
+    hour = now.hour
+    weekday = now.weekday()  # 0=Monday, 6=Sunday
+
+    if weekday < 5:  # Monday - Friday
+        return 9 <= hour < 20  # 9am - 8pm
+    else:  # Saturday - Sunday
+        return 9 <= hour < 18  # 9am - 6pm
+
 def make_outbound_call(gym_name, campaign, data):
+    if not is_within_calling_hours():
+        now = datetime.now(EASTERN)
+        logging.info(f"[{gym_name}-{campaign}] Outside calling hours ({now.strftime('%A %I:%M %p ET')}) — call skipped.")
+        return type('Response', (), {'status_code': 200, 'text': 'Outside calling hours — call skipped'})()
+
     first_name = (
         data.get("firstName") or
         data.get("First_name") or
