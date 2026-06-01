@@ -42,6 +42,33 @@ GYMS = {
     "middletown-toured":   {"type": "outbound", "gym": "middletown", "campaign": "toured"},
     "brookfield-toured":   {"type": "outbound", "gym": "brookfield", "campaign": "toured"},
 
+    # --- Cancelled Member Month 1 (outbound call API) ---
+    "wallingford-cancelled-month1":  {"type": "outbound", "gym": "wallingford", "campaign": "cancelled-month1"},
+    "torrington-cancelled-month1":   {"type": "outbound", "gym": "torrington", "campaign": "cancelled-month1"},
+    "ridgefield-cancelled-month1":   {"type": "outbound", "gym": "ridgefield", "campaign": "cancelled-month1"},
+    "newtown-cancelled-month1":      {"type": "outbound", "gym": "newtown", "campaign": "cancelled-month1"},
+    "newmilford-cancelled-month1":   {"type": "outbound", "gym": "newmilford", "campaign": "cancelled-month1"},
+    "middletown-cancelled-month1":   {"type": "outbound", "gym": "middletown", "campaign": "cancelled-month1"},
+    "brookfield-cancelled-month1":   {"type": "outbound", "gym": "brookfield", "campaign": "cancelled-month1"},
+
+    # --- Cancelled Member Month 2 (outbound call API) ---
+    "wallingford-cancelled-month2":  {"type": "outbound", "gym": "wallingford", "campaign": "cancelled-month2"},
+    "torrington-cancelled-month2":   {"type": "outbound", "gym": "torrington", "campaign": "cancelled-month2"},
+    "ridgefield-cancelled-month2":   {"type": "outbound", "gym": "ridgefield", "campaign": "cancelled-month2"},
+    "newtown-cancelled-month2":      {"type": "outbound", "gym": "newtown", "campaign": "cancelled-month2"},
+    "newmilford-cancelled-month2":   {"type": "outbound", "gym": "newmilford", "campaign": "cancelled-month2"},
+    "middletown-cancelled-month2":   {"type": "outbound", "gym": "middletown", "campaign": "cancelled-month2"},
+    "brookfield-cancelled-month2":   {"type": "outbound", "gym": "brookfield", "campaign": "cancelled-month2"},
+
+    # --- Cancelled Member Month 3 (outbound call API) ---
+    "wallingford-cancelled-month3":  {"type": "outbound", "gym": "wallingford", "campaign": "cancelled-month3"},
+    "torrington-cancelled-month3":   {"type": "outbound", "gym": "torrington", "campaign": "cancelled-month3"},
+    "ridgefield-cancelled-month3":   {"type": "outbound", "gym": "ridgefield", "campaign": "cancelled-month3"},
+    "newtown-cancelled-month3":      {"type": "outbound", "gym": "newtown", "campaign": "cancelled-month3"},
+    "newmilford-cancelled-month3":   {"type": "outbound", "gym": "newmilford", "campaign": "cancelled-month3"},
+    "middletown-cancelled-month3":   {"type": "outbound", "gym": "middletown", "campaign": "cancelled-month3"},
+    "brookfield-cancelled-month3":   {"type": "outbound", "gym": "brookfield", "campaign": "cancelled-month3"},
+
     # --- Past Due 0-30 (old API key) ---
     "wallingford-pastdue0-30":  "cdc2306a-9f8c-4da0-85fd-62d890740137",
     "torrington-pastdue0-30":   "90f8c7c3-5a48-4499-a2f5-1e1b7383f592",
@@ -95,54 +122,32 @@ GYMS = {
     "newmilford-ptpastdue61-90":  "be4ead7c-6a1a-4ca3-a9a1-6043bcb7d0f6",
     "middletown-ptpastdue61-90":  "745714c3-76d2-4cf5-806d-8661d95f4a49",
     "brookfield-ptpastdue61-90":  "02ac7b55-4430-4062-91d1-b43d6bd8c3ef",
-
-    # --- Cancelled Member Month 1 (old API key) ---
-    "wallingford-cancelled-month1":  "8da653cb-d4ca-4fbf-a24d-8ef5b765647e",
-    "torrington-cancelled-month1":   "",
-    "ridgefield-cancelled-month1":   "",
-    "newtown-cancelled-month1":      "",
-    "newmilford-cancelled-month1":   "",
-    "middletown-cancelled-month1":   "",
-    "brookfield-cancelled-month1":   "",
-
-    # --- Cancelled Member Month 2 (old API key) ---
-    "wallingford-cancelled-month2":  "56e7f372-f7a5-4881-a89d-e55566202e3f",
-    "torrington-cancelled-month2":   "",
-    "ridgefield-cancelled-month2":   "",
-    "newtown-cancelled-month2":      "",
-    "newmilford-cancelled-month2":   "",
-    "middletown-cancelled-month2":   "",
-    "brookfield-cancelled-month2":   "",
-
-    # --- Cancelled Member Month 3 (old API key) ---
-    "wallingford-cancelled-month3":  "bfead2ac-15fe-4b8c-b189-bca4eec5e2a4",
-    "torrington-cancelled-month3":   "",
-    "ridgefield-cancelled-month3":   "",
-    "newtown-cancelled-month3":      "",
-    "newmilford-cancelled-month3":   "",
-    "middletown-cancelled-month3":   "",
-    "brookfield-cancelled-month3":   "",
 }
 
 INTRO_MESSAGES = {
     "weektrial": "Hi {first_name}, this is Maya calling from Club 24. I saw you recently claimed your free 7-day pass, and I wanted to personally welcome you and help you get started. We'd love to get your first workout scheduled so you can take full advantage of your free week. What day works best for you to come in and check out the club?",
     "toured": "Hi {first_name}, this is Maya calling from Club 24. You toured our facility a couple of weeks ago, and I just wanted to follow up to see if you had any questions about membership or the club itself. We're also currently offering a special promotion exclusively for recent tour guests, and I wanted to make sure you had the opportunity to take advantage of it before it ends. Do you have any questions for us?",
+    "cancelled-month1": "Hey {first_name}, this is Ashley over at Club 24. I know it's been about a month since you canceled your membership, and I just wanted to check in real quick because we hadn't seen you around. Usually when members step away it's because schedules change, work gets hectic, or life just gets busy for a bit — totally understandable. I was curious… have you still been able to stay active lately?",
+    "cancelled-month2": "Hey {first_name}, this is Ashley over at Club 24. I know it's been a couple months since you canceled your membership, and I wanted to reach out because we've actually been helping a lot of former members restart their routines recently. A lot of people tell us once they fall out of rhythm, it gets harder and harder to get back into it — so I figured I'd check in and see how things have been going for you lately.",
+    "cancelled-month3": "Hey {first_name}, this is Ashley over at Club 24. I know it's been a few months since you were last with us, but I wanted to reach out one more time because we're wrapping up a special restart opportunity for former members. Honestly, a lot of people wait for the 'perfect time' to get back into a routine — and then months turn into a year really fast. So I just wanted to see if restarting your fitness routine was something you'd still be open to exploring.",
 }
 
 VOICEMAIL_MESSAGES = {
     "weektrial": "Hi {first_name}, this is Maya calling from Club 24. I'm reaching out because you recently signed up for a free 7-day pass with us. I wanted to help you get your first visit scheduled and answer any questions you may have before coming in. Give us a call back, and we'll get your free week started. We look forward to seeing you soon!",
     "toured": "Hi {first_name}, this is Maya calling from Club 24. I'm just following up regarding your recent visit and tour at our facility a couple of weeks ago. I wanted to check in to see if you had any questions about membership options and also let you know we currently have a special promotion available exclusively for recent tour guests for a limited time. Please give us a call back, go to our website club24gyms dot com, or stop by the club anytime. We'd love to help you get started. Thanks again, and we look forward to hearing from you soon.",
+    "cancelled-month1": "Hey {first_name}, this is Ashley over at Club 24. I just wanted to reach out and check in since it's been about a month since your membership ended. We've been reconnecting with some former members lately, and your name came up. No rush at all, but if you've thought about getting back into a routine, give us a quick call back. Again, this is Ashley over at Club 24. Hope to hear from you soon.",
+    "cancelled-month2": "Hey {first_name}, this is Ashley over at Club 24. I wanted to reach out because we're currently helping a lot of former members get restarted, and I thought it might be a good time to check in with you too. We do have a simple return-member option available right now if getting back into a routine has been on your mind at all. Give me a call back. Again, this is Ashley at Club 24.",
+    "cancelled-month3": "Hey {first_name}, this is Ashley over at Club 24. I wanted to give you one last quick call because we're wrapping up a return-member opportunity for former members, and I didn't want you to miss it if getting back into a routine was something you were considering. If you want to reconnect or hear the details, give us a quick call back. Again, this is Ashley at Club 24.",
 }
 
 def is_within_calling_hours():
     now = datetime.now(EASTERN)
     hour = now.hour
     weekday = now.weekday()  # 0=Monday, 6=Sunday
-
     if weekday < 5:  # Monday - Friday
-        return 9 <= hour < 20  # 9am - 8pm
+        return 9 <= hour < 20
     else:  # Saturday - Sunday
-        return 9 <= hour < 18  # 9am - 6pm
+        return 9 <= hour < 18
 
 def make_outbound_call(gym_name, campaign, data):
     if not is_within_calling_hours():
